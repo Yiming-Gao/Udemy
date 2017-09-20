@@ -13,13 +13,13 @@ import numpy as np
 
 from nltk.stem import WordNetLemmatizer
 from sklearn.linear_model import LogisticRegression
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup # XML parser
 
 
 wordnet_lemmatizer = WordNetLemmatizer()
 
 # from http://www.lextek.com/manuals/onix/stopwords1.html
-stopwords = set(w.rstrip() for w in open('stopwords.txt'))
+stopwords = set(w.rstrip() for w in open('stopwords.txt')) # like a, the,...
 
 # load the reviews
 # data courtesy of http://www.cs.jhu.edu/~mdredze/datasets/sentiment/index2.html
@@ -49,24 +49,24 @@ def my_tokenizer(s):
     s = s.lower() # downcase
     tokens = nltk.tokenize.word_tokenize(s) # split string into words (tokens)
     tokens = [t for t in tokens if len(t) > 2] # remove short words, they're probably not useful
-    tokens = [wordnet_lemmatizer.lemmatize(t) for t in tokens] # put words into base form
+    tokens = [wordnet_lemmatizer.lemmatize(t) for t in tokens] # put words into base form: jumping becomes jump, dogs becomes dog
     tokens = [t for t in tokens if t not in stopwords] # remove stopwords
     return tokens
 
 
 # create a word-to-index map so that we can create our word-frequency vectors later
 # let's also save the tokenized versions so we don't have to tokenize again later
-word_index_map = {}
-current_index = 0
+word_index_map = {} # map words to indices
+current_index = 0 # a counter that's going to increase whenever I see a new word
 positive_tokenized = []
 negative_tokenized = []
 
 for review in positive_reviews:
-    tokens = my_tokenizer(review.text)
-    positive_tokenized.append(tokens)
+    tokens = my_tokenizer(review.text) # turn every word in the string into a separate word in an array
+    positive_tokenized.append(tokens) 
     for token in tokens:
         if token not in word_index_map:
-            word_index_map[token] = current_index
+            word_index_map[token] = current_index # add them to map
             current_index += 1
 
 for review in negative_reviews:
@@ -85,15 +85,15 @@ def tokens_to_vector(tokens, label):
         i = word_index_map[t]
         x[i] += 1
     x = x / x.sum() # normalize it before setting label
-    x[-1] = label
+    x[-1] = label # last element is the label
     return x
 
-N = len(positive_tokenized) + len(negative_tokenized)
+N = len(positive_tokenized) + len(negative_tokenized) # total number of examples
 # (N x D+1 matrix - keeping them together for now so we can shuffle more easily later
 data = np.zeros((N, len(word_index_map) + 1))
 i = 0
 for tokens in positive_tokenized:
-    xy = tokens_to_vector(tokens, 1)
+    xy = tokens_to_vector(tokens, 1) # 1 is the label, positive reviews
     data[i,:] = xy
     i += 1
 
@@ -106,7 +106,7 @@ for tokens in negative_tokenized:
 # try it multiple times!
 np.random.shuffle(data)
 
-X = data[:,:-1]
+X = data[:,:-1] # all columns except the last column
 Y = data[:,-1]
 
 # last 100 rows will be test
