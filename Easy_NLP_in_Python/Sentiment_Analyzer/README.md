@@ -20,11 +20,11 @@ Natural language toolkit
 
 "sudo pip install nltk"
 
-*nltk.download()* if you're missing a resource
+***nltk.download()*** if you're missing a resource
 
 1. POS tagging
 
-nltk.pos_tag("Machine learning is great"): takes in an array of tokens, and split it into tokens
+***nltk.pos_tag("Machine learning is great")***: takes in an array of tokens, and split it into tokens
 
 2. Stemming and lemmatization
 
@@ -33,3 +33,17 @@ nltk.pos_tag("Machine learning is great"): takes in an array of tokens, and spli
   - but "dog / dogs" or "jump / jumping" probably have the same meaning
 - What's the difference?
   - stemming is more "crude"
+
+***PorterStemmer()***
+
+3. NER (Named entity recognition)
+
+"Albert Einstein" to person; "Apple" to organization
+
+s = "Albert Einstein was born on March 14, 1879."
+
+tags = nltk.pos_tag(s.split())
+
+***nltk.ne_chunk(tags)*** # need to install maxent_ne_chunker
+
+***nltk.ne_chunk(tags).draw()*** # draw the tree
