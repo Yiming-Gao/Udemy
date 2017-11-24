@@ -5,7 +5,7 @@
 
 # Author: http://lazyprogrammer.me
 
-# A very bad article spinner using trigrams.
+# A very bad article spinner using trigrams
 import nltk
 import random
 import numpy as np
